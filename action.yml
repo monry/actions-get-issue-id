@@ -20,7 +20,10 @@ inputs:
 outputs:
   issue-id:
     description: 'Issue Id that can be obtained.'
-    value: ${{ steps.get-issue-id.outputs.result }}
+    value: ${{ steps.get-issue-id.outputs.issue-id }}
+  error:
+    description: 'Error message.'
+    value: ${{ steps.get-issue-id.outputs.error }}
 runs:
   using: "composite"
   steps:
@@ -60,11 +63,11 @@ runs:
           }
 
           if (!result.repository) {
-            return 'Repository does not found.';
+            return '::set-output name=error::Repository does not found.';
           }
 
           if (!result.repository.issue) {
-            return 'Issue does not found.';
+            return '::set-output name=error::Issue does not found.';
           }
 
-          return result.repository.issue.id;
+          return '::set-output name=issue-id::' + result.repository.issue.id;

@@ -34,7 +34,7 @@ jobs:
         issue-number: 1
     - name: Assert
       run: |
-        test '${{ steps.get-issue-id.outputs.issue-id }}' = 'Repository does not found.'
+        test '${{ steps.get-issue-id.outputs.error }}' = 'Repository does not found.'
   test-issue-not-found:
     name: Issue not found
     runs-on: ubuntu-latest
@@ -49,4 +49,4 @@ jobs:
         issue-number: -1
     - name: Assert
       run: |
-        test '${{ steps.get-issue-id.outputs.issue-id }}' = 'Issue does not found.'
+        test '${{ steps.get-issue-id.outputs.error }}' = 'Issue does not found.'

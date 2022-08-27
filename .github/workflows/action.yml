@@ -1,0 +1,72 @@
+name: "Get Issue Id"
+author: 'Tetsuya Mori'
+description: 'Get Issue Id'
+branding:
+  icon: hash
+  color: green
+inputs:
+  github-token:
+    default: ''
+    required: true
+    description: 'Personal Access Token that with `repo` is granted.'
+  issue-repository:
+    default: ''
+    required: true
+    description: 'Repository name with owner of issue.'
+  issue-number:
+    default: 0
+    required: true
+    description: 'Number of issue.'
+outputs:
+  issue-id:
+    description: 'Issue Id that can be obtained.'
+    value: ${{ steps.get-issue-id.outputs.result }}
+runs:
+  using: "composite"
+  steps:
+    - name: Get Issue Id
+      uses: actions/github-script@v6
+      id: get-issue-id
+      with:
+        result-encoding: string
+        github-token: ${{ inputs.github-token }}
+        script: |
+          let repositoryOwner, repositoryName;
+          [repositoryOwner, repositoryName] = '${{ inputs.issue-repository }}'.split('/');
+
+          const variables = {
+            repositoryOwner: repositoryOwner,
+            repositoryName: repositoryName,
+            issueNumber: ${{ inputs.issue-number }}
+          };
+          const query = `
+            query($repositoryOwner: String!, $repositoryName: String!, $issueNumber: Int!) {
+              {
+                repository(owner: $repositoryOwner, name: $repositoryName) {
+                  id
+                  issue(number: $issueNumber) {
+                    id
+                  }
+                }
+              }
+            }
+          `;
+          var result = {};
+
+          try {
+            result = await github.graphql(query, variables);
+          } catch (error) {
+            if (error.data) {
+              result = error.data;
+            }
+          }
+
+          if (!result.repository) {
+            return 'Repository does not found.';
+          }
+
+          if (!result.repository.issue) {
+            return 'Issue does not found.';
+          }
+
+          return result.repository.issue.id;

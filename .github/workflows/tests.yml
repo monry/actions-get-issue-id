@@ -1,0 +1,52 @@
+name: Tests
+on:
+  workflow_call:
+    secrets:
+      PERSONAL_ACCESS_TOKEN:
+        required: true
+jobs:
+  test-issue-found:
+    name: Issue found
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Get Issue Id
+      id: get-issue-id
+      uses: ./
+      with:
+        github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        issue-repository: 'monry/actions-get-issue-id'
+        issue-number: 1
+    - name: Assert
+      run: |
+        test '${{ steps.get-issue-id.outputs.issue-id }}' = 'I_kwDOH5E83c5QpiT5'
+  test-repository-not-found:
+    name: Repository not found
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Get Issue Id
+      id: get-issue-id
+      uses: ./
+      with:
+        github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        issue-repository: 'monry/actions-get-issue-id-'
+        issue-number: 1
+    - name: Assert
+      run: |
+        test '${{ steps.get-issue-id.outputs.error }}' = 'Repository does not found.'
+  test-issue-not-found:
+    name: Issue not found
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Get Issue Id
+      id: get-issue-id
+      uses: ./
+      with:
+        github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        issue-repository: 'monry/actions-get-issue-id'
+        issue-number: -1
+    - name: Assert
+      run: |
+        test '${{ steps.get-issue-id.outputs.error }}' = 'Issue does not found.'

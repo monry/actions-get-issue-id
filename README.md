@@ -1,4 +1,4 @@
-# Get Project Id
+# Get Issue Id
 
 Get issue ID by issue number
 

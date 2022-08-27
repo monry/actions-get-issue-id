@@ -45,3 +45,8 @@ Obtained value stores into output variable named `issue-id`.
 - run: |
     echo '${{ steps.get-project-id.outputs.project-id }}'
 ```
+
+## `error`
+
+Set error message if some error occured.
+

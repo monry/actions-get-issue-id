@@ -41,12 +41,10 @@ runs:
           };
           const query = `
             query($repositoryOwner: String!, $repositoryName: String!, $issueNumber: Int!) {
-              {
-                repository(owner: $repositoryOwner, name: $repositoryName) {
+              repository(owner: $repositoryOwner, name: $repositoryName) {
+                id
+                issue(number: $issueNumber) {
                   id
-                  issue(number: $issueNumber) {
-                    id
-                  }
                 }
               }
             }

@@ -63,11 +63,14 @@ runs:
           }
 
           if (!result.repository) {
-            return '::set-output name=error::Repository does not found.';
+            core.setOutput('error', 'Repository does not found.');
+            return;
           }
 
           if (!result.repository.issue) {
-            return '::set-output name=error::Issue does not found.';
+            core.setOutput('error', 'Issue does not found.');
+            return;
           }
 
-          return '::set-output name=issue-id::' + result.repository.issue.id;
+          core.setOutput('issue-id', result.repository.issue.id);
+          return;
